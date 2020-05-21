@@ -16,13 +16,17 @@
 
 <script>
 import BScroll from "@better-scroll/core";
+import slider from "@better-scroll/slide";
 import { addClass } from "@/assets/js/dom";
+BScroll.use(slider);
 export default {
   name: "Slider",
   data() {
     return {
+      slider: null,
       dots: [],
-      currentPageIndex: 0
+      currentPageIndex: 0,
+      playTimer: 0
     };
   },
   props: {
@@ -45,17 +49,17 @@ export default {
       this._setSliderWidth();
       this._initDots();
       this._initSlider();
-      if (this.autoPlay) {
-        this._play();
-      }
+      // if (this.autoPlay) {
+      //   this._play();
+      // }
     }, 20);
 
     window.addEventListener("resize", () => {
-      if (!this.slider) {
+      if (!this.slide) {
         return;
       }
       this._setSliderWidth(true);
-      this.slider.refresh();
+      this.slide.refresh();
     });
   },
   methods: {
@@ -77,45 +81,49 @@ export default {
       this.$refs.sliderGroup.style.width = width + "px";
     },
     _initDots() {
-            this.dots = new Array(this.children.length)
-        },
+      this.dots = new Array(this.children.length);
+    },
     _initSlider() {
+      clearTimeout(this.playTimer);
       this.slider = new BScroll(this.$refs.slider, {
         scrollX: true,
         scrollY: false,
-        momentum: false,
-        // better-scroll 2.0配置
         slide: {
           loop: this.loop,
-          threshold: 0.3,
-          easing: {
-            style: "ease"
-          }
-        }
+          threshold: 100
+        },
+        useTransition: true,
+        momentum: false,
+        bounce: false,
+        probeType: 2
       });
-
-      // 滚动到下一张事件
+      this.slider.on("scrollEnd", this._onScrollEnd);
+      this.slider.on("beforeScrollStart", () => {
+        clearTimeout(this.playTimer);
+      });
+      // user touched the slide done
       this.slider.on("scrollEnd", () => {
-        let pageIndex = this.slider.getCurrentPage().pageX;
-        if (this.loop) {
-          pageIndex -= 1;
-        }
-        this.currentPageIndex = pageIndex;
-
-        if (this.autoPlay) {
-          clearTimeout(this.timer);
-          this._play();
-        }
+        this.autoGoNext();
       });
+      this.slider.on("slideWillChange", page => {
+        this.currentPageIndex = page.pageX;
+      });
+      this.autoGoNext();
     },
-    _play() {
-      let pageIndex = this.currentPageIndex + 1;
-      if (this.loop) {
-        pageIndex += 1;
-      }
-      this.timer = setTimeout(() => {
-        this.slider.goToPage(pageIndex, 0, 400);
-      }, this.interval);
+    nextPage() {
+      this.slider.next();
+    },
+    prePage() {
+      this.slider.prev();
+    },
+    _onScrollEnd() {
+      this.autoGoNext();
+    },
+    autoGoNext() {
+      clearTimeout(this.playTimer);
+      this.playTimer = setTimeout(() => {
+        this.nextPage();
+      }, 4000);
     }
   },
   destroyed() {

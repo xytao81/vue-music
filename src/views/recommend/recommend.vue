@@ -1,6 +1,6 @@
 <template>
   <div class="recommend" ref="recommend">
-    <div ref="scroll" class="recommend-content">
+    <Scroll ref="scroll" class="recommend-content" :data="discList">
       <div>
         <div v-if="recommends.length" class="slider-wrapper">
           <Slider>
@@ -11,7 +11,7 @@
             </div>
           </Slider>
         </div>
-        <!-- <div class="recommend-list" ref="recommendList">
+        <div class="recommend-list" ref="recommendList">
           <h1 class="list-title">热门歌单推荐</h1>
           <ul>
             <li v-for="item in discList" :key="item.dissid" class="item" @click="selectItem(item)">
@@ -27,38 +27,51 @@
         </div>
       </div>
       <div class="loading-container" v-show="!discList.length">
-        <Loading></Loading> -->
+        <Loading></Loading>
       </div>
-    </div>
+    </Scroll>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import { getRecommend } from "@/api/recommend";
+import { getRecommend, getDiscList } from "@/api/recommend";
 import { ERR_OK } from "@/api/config";
 import Slider from "@/base/slider/slider";
+import Scroll from "@/base/scroll/scroll"
+import Loading from '@/base/loading/loading'
 export default {
   components: {
-    Slider
+    Slider,
+    Scroll,
+    Loading
   },
   data() {
     return {
-      recommends: []
+      recommends: [],
+      discList: []
     };
   },
   created() {
     this._getRecommend();
+    this._getDiscList()
   },
   methods: {
+    // 获取轮播图
     _getRecommend() {
-      getRecommend()
-        .then(result => {
-          if (result.code === ERR_OK) {
-            this.recommends = result.data.slider;
-          }
-        })
-        .catch(err => {});
+      getRecommend().then(result => {
+        if (result.code === ERR_OK) {
+          this.recommends = result.data.slider;
+        }
+      });
+    },
+    // 获取列表
+    _getDiscList() {
+      getDiscList().then(result => {
+        if (result.code === ERR_OK) {
+          this.discList = result.data.list;
+        }
+      });
     }
   }
 };

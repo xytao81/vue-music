@@ -11,7 +11,7 @@ import '@/assets/stylus/index.styl'
 
 Vue.config.productionTip = false
 
-// FastClick.attach(document.body)
+FastClick.attach(document.body)
 
 Vue.use(VueLazyload, {
   loading: require('@/assets/image/default.png')
