@@ -22,7 +22,11 @@ const routes = [
   },
   {
     path: '/singer',
-    component: () => import('@/views/singer/singer')
+    component: () => import('@/views/singer/singer'),
+    children: [{
+      path: ':id',
+      component: () => import('@/components/singer-detail/singer-detail') 
+    }]
   }
 ]
 
