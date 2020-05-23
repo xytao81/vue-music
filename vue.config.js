@@ -1,9 +1,9 @@
 'use strict'
 const axios = require('axios')
+const bodyParser = require('body-parser')
 
 module.exports = {
     devServer: {
-        open: true,
         host: '0.0.0.0',
         before: app => {
             app.get('/api/getDiscList', (req, res) => {
@@ -17,6 +17,7 @@ module.exports = {
                 }).then((response) => {
                     res.json(response.data)
                 }).catch(err => {
+                    // eslint-disable-next-line no-console
                     console.log(err)
                 })
             })
@@ -40,6 +41,7 @@ module.exports = {
                     }
                     res.json(ret)
                 }).catch(err => {
+                    // eslint-disable-next-line no-console
                     console.log(err)
                 })
             })
@@ -64,24 +66,26 @@ module.exports = {
                     }
                     res.json(ret)
                 }).catch((err) => {
+                    // eslint-disable-next-line no-console
                     console.log(err)
                 })
             })
 
-            // app.post('/api/getPurlUrl', bodyParser.json(), (req, res) => {
-            //     const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
-            //     axios.post(url, req.body, {
-            //         headers: {
-            //             referer: 'https://y.qq.com/',
-            //             origin: 'https://y.qq.com',
-            //             'Content-type': 'application/x-www-form-urlencoded'
-            //         }
-            //     }).then((response) => {
-            //         res.json(response.data)
-            //     }).catch(err => {
-            //         console.log(err)
-            //     })
-            // })
+            app.post('/api/getPurlUrl', bodyParser.json(), (req, res) => {
+                const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
+                axios.post(url, req.body, {
+                    headers: {
+                        referer: 'https://y.qq.com/',
+                        origin: 'https://y.qq.com',
+                        'Content-type': 'application/x-www-form-urlencoded'
+                    }
+                }).then((response) => {
+                    res.json(response.data)
+                }).catch(err => {
+                    // eslint-disable-next-line no-console
+                    console.log(err)
+                })
+            })
 
             app.get('/api/search', (req, res) => {
                 const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
@@ -94,6 +98,7 @@ module.exports = {
                 }).then((response) => {
                     res.json(response.data)
                 }).catch((e) => {
+                    // eslint-disable-next-line no-console
                     console.log(e)
                 })
             })

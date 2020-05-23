@@ -1,9 +1,10 @@
 <template>
   <div class="singer" ref="singer">
     <ListView @click="clickItem" :data="singers" ref="list"></ListView>
-    <keep-alive>
+    <!-- <keep-alive>
       <router-view />
-    </keep-alive>
+    </keep-alive> -->
+     <router-view></router-view>
   </div>
 </template>
 
