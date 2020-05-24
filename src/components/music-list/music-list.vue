@@ -23,7 +23,7 @@
       ref="list"
     >
       <div class="song-list-wrapper">
-        <SongList :songs="songs" :rank="rank"></SongList>
+        <SongList @select="selectItem" :songs="songs" :rank="rank"></SongList>
       </div>
       <div class="loading-container" v-show="!songs.length">
         <Loading></Loading>
@@ -117,13 +117,20 @@ export default {
     }
   },
   methods: {
+    selectItem(item, index) {
+      this.selectPlay({
+        list: this.songs,
+        index
+      })
+    },
     scroll(pos) {
       this.scrollY = pos.y;
     },
     back() {
       this.$router.go(-1);
     },
-    random() {}
+    random() {},
+    ...mapActions(['selectPlay'])
   }
 };
 </script>
