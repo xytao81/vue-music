@@ -14,11 +14,13 @@ import { ERR_OK } from "@/api/config";
 import Singer from "@/assets/js/singer";
 import ListView from "@/base/listView/listView";
 import { mapMutations } from 'vuex'
+import { playlistMixin } from "@/assets/js/mixin";
 
 const HOT_NAME = "热门";
 const HOT_INDEX_LEN = 10;
 
 export default {
+  mixins: [playlistMixin],
   components: {
     ListView
   },
@@ -31,6 +33,11 @@ export default {
     this._getSingerList();
   },
   methods: {
+    handlePlayList(playlist) {
+      let bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.singer.style.bottom = bottom
+      this.$refs.list.refresh()
+    },
     ...mapMutations({
       setSinger: 'SET_SINGER'
     }),

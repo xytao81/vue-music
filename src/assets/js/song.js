@@ -1,5 +1,6 @@
 import { getLyric, getSongsUrl } from '@/api/song'
 import { ERR_OK } from '@/api/config'
+import { Base64 } from 'js-base64'
 
 export default class Song {
     constructor({id, mid, singer, name, album, duration, image, url}) {
@@ -10,8 +11,28 @@ export default class Song {
         this.album = album
         this.duration = duration
         this.image = image
-        this.filename = `C400${this.mid}.m4a`
+        this.filename = `C400${this.min}.m4a`
         this.url = url
+    }
+
+    getLyric () {
+        if (this.lyric) {
+            return Promise.resolve(this.lyric)
+        }
+
+        return new Promise((resolve, reject) => {
+            getLyric(this.mid).then((res) => {
+                if (res.retcode === ERR_OK) {
+                    this.lyric = Base64.decode(res.lyric)
+                    resolve(this.lyric)
+                } else {
+                    reject(new Error('no lyric'))
+                }
+            }).catch(err => {
+                // eslint-disable-next-line no-console
+                console.log(err)
+            })
+        })
     }
 }
 
@@ -37,6 +58,10 @@ export const filterSinger = (singer) => {
         ret.push(s.name)
     })
     return ret.join('/')
+}
+
+export const isValidMusic = (musicData) => {
+    return musicData.songid && musicData.albummid && (!musicData.pay || musicData.pay.payalbumprice === 0)
 }
 
 export const processSongsUrl = (songs) => {

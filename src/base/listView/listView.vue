@@ -11,7 +11,12 @@
       <li v-for="group in data" :key="group.title" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li @click="clickItem(item)" v-for="item in group.items" :key="item.name" class="list-group-item">
+          <li
+            @click="clickItem(item)"
+            v-for="item in group.items"
+            :key="item.name"
+            class="list-group-item"
+          >
             <img class="avatar" v-lazy="item.avatar" />
             <span class="name">{{item.name}}</span>
           </li>
@@ -34,9 +39,9 @@
         >{{item}}</li>
       </ul>
     </div>
-     <div class="list-fixed" ref="fixed" v-show="fixedTitle">
-            <div class="fixed-title">{{fixedTitle}} </div>
-        </div>
+    <div class="list-fixed" ref="fixed" v-show="fixedTitle">
+      <div class="fixed-title">{{fixedTitle}}</div>
+    </div>
   </Scroll>
 </template>
 
@@ -71,10 +76,12 @@ export default {
       });
     },
     fixedTitle() {
-        if (this.scrollY > 0) {
-            return ''
-        }
-        return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
+      if (this.scrollY > 0) {
+        return "";
+      }
+      return this.data[this.currentIndex]
+        ? this.data[this.currentIndex].title
+        : "";
     }
   },
   props: {
@@ -86,9 +93,12 @@ export default {
     }
   },
   methods: {
-      clickItem(item) {
-          this.$emit('click', item)
-      },
+    refresh() {
+      this.$refs.listview.refresh()
+    },
+    clickItem(item) {
+      this.$emit("click", item);
+    },
     onShortcutTouchStart(e) {
       let anchorIndex = getData(e.target, "index");
       let firstTouch = e.touches[0];
@@ -159,12 +169,13 @@ export default {
       this.currentIndex = listHeight.length - 2;
     },
     diff(newVal) {
-        let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
-        if (this.fixedTop === fixedTop) {
-            return
-        }
-        this.fixedTop = fixedTop
-        this.$refs.fixed.style.transform = `translate3d(0, ${fixedTop}px, 0)`
+      let fixedTop =
+        newVal > 0 && newVal < TITLE_HEIGHT ? newVal - TITLE_HEIGHT : 0;
+      if (this.fixedTop === fixedTop) {
+        return;
+      }
+      this.fixedTop = fixedTop;
+      this.$refs.fixed.style.transform = `translate3d(0, ${fixedTop}px, 0)`;
     }
   }
 };

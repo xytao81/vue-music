@@ -74,7 +74,7 @@ export default {
   },
   watch: {
     percent(newPercent) {
-      if (newPercent >= 0) {
+      if (newPercent >= 0 ) {
         // 获取bar宽度
         const barWidth = this.$refs.progressBar.clientWidth - progrssBtnWidth;
         const offsetWidth = newPercent * barWidth;

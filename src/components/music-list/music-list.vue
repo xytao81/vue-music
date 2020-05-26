@@ -37,7 +37,7 @@ import SongList from "@/base/song-list/song-list";
 // import { prefixStyle } from "@/assets/js/dom";
 import Loading from "@/base/loading/loading";
 import { mapActions } from "vuex";
-// import { playlistMixin } from "@/assets/js/mixin";
+import { playlistMixin } from "@/assets/js/mixin";
 
 const RESERVED_HEIGHT = 40;
 // const transform = prefixStyle("transform");
@@ -45,6 +45,7 @@ const RESERVED_HEIGHT = 40;
 
 export default {
   name: "MusicList",
+  mixins: [playlistMixin],
   components: {
     Scroll,
     SongList,
@@ -117,6 +118,11 @@ export default {
     }
   },
   methods: {
+    handlePlayList(playlist) {
+      let bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.list.$el.style.bottom = bottom
+      this.$refs.list.refresh()
+    },
     selectItem(item, index) {
       this.selectPlay({
         list: this.songs,
@@ -129,8 +135,12 @@ export default {
     back() {
       this.$router.go(-1);
     },
-    random() {},
-    ...mapActions(['selectPlay'])
+    random() {
+      this.randomPlay({
+        list: this.songs
+      })
+    },
+    ...mapActions(['selectPlay','randomPlay'])
   }
 };
 </script>

@@ -38,9 +38,14 @@
 import { getRecommend, getDiscList } from "@/api/recommend";
 import { ERR_OK } from "@/api/config";
 import Slider from "@/base/slider/slider";
-import Scroll from "@/base/scroll/scroll"
-import Loading from '@/base/loading/loading'
+import Scroll from "@/base/scroll/scroll";
+import Loading from "@/base/loading/loading";
+import { playlistMixin } from "@/assets/js/mixin";
+import {mapMutations} from 'vuex'
+
 export default {
+  name: 'Recommend',
+  mixins: [playlistMixin],
   components: {
     Slider,
     Scroll,
@@ -54,9 +59,20 @@ export default {
   },
   created() {
     this._getRecommend();
-    this._getDiscList()
+    this._getDiscList();
   },
   methods: {
+    selectItem(item) {
+      this.$router.push({
+        path: `/recommend/${item.dissid}`
+      });
+      this.setDisc(item);
+    },
+    handlePlayList(playlist) {
+      let bottom = playlist.length > 0 ? "60px" : "";
+      this.$refs.recommend.style.bottom = bottom;
+      this.$refs.scroll.refresh();
+    },
     // 获取轮播图
     _getRecommend() {
       getRecommend().then(result => {
@@ -72,7 +88,10 @@ export default {
           this.discList = result.data.list;
         }
       });
-    }
+    },
+    ...mapMutations({
+      setDisc: "SET_DISC"
+    })
   }
 };
 </script>

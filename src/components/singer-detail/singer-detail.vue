@@ -9,38 +9,46 @@ import { mapGetters } from "vuex";
 import { getSingerDetail } from "@/api/singer";
 import { createSong, processSongsUrl } from "@/assets/js/song";
 import { ERR_OK } from "@/api/config";
-import MusicList from '@/components/music-list/music-list'
+import MusicList from "@/components/music-list/music-list";
 export default {
-  components :{
+  components: {
     MusicList
   },
   data() {
     return {
       show: false,
-      songs: [],
+      songs: []
     };
   },
   created() {
     setTimeout(() => {
-      this.show = true
-    }, 20)
+      this.show = true;
+    }, 20);
+    this._getDetail();
   },
   computed: {
     ...mapGetters(["singer"]),
     title() {
-      return this.singer.name
+      return this.singer.name;
     },
     bgImage() {
-      return this.singer.avatar
+      return this.singer.avatar;
     }
   },
   mounted() {
     this._getSingerDetail(this.singer.id);
   },
   methods: {
+    _getDetail() {
+      if (!this.singer.id) {
+        this.$router.push("/singer");
+        return;
+      }
+    },
     _getSingerDetail(id) {
       getSingerDetail(id).then(res => {
         if (res.code === ERR_OK) {
+          console.log(this._normalizeSongs(res.data.list))
           processSongsUrl(this._normalizeSongs(res.data.list))
             .then(songs => {
               this.songs = songs;
