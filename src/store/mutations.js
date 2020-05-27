@@ -34,8 +34,8 @@ const mutations = {
     [types.SET_PLAY_HISTORY](state, playhistory) {
         state.playHistory = playhistory
     },
-    [types.SET_FAVORITE_LIST](state, favoriteList) {
-        state.favoriteList = favoriteList
+    [types.SET_FAVOURITE_LIST](state, favouriteList) {
+        state.favouriteList = favouriteList
     }
 }
 

@@ -19,7 +19,7 @@
               </li>
             </ul>
           </div>
-          <!-- <div class="search-history" v-show="searchHistory.length">
+          <div class="search-history" v-show="searchHistory.length">
             <h1 class="title">
               <span class="text">搜索历史</span>
               <span class="clear" @click="showConfirm">
@@ -27,22 +27,22 @@
               </span>
             </h1>
             <SearchList :searches="searchHistory" @select="addQuery" @delete="deleteSearchHistory"></SearchList>
-          </div>-->
+          </div>
         </div>
       </Scroll>
     </div>
     <div class="search-result" v-show="query" ref="searchResult">
       <Suggest :query="query" @listScroll="blurInput" @select="saveSearch" ref="suggest"></Suggest>
     </div>
-    <!-- <Confirm ref="confirm" text="是否清空所有搜索历史" confirmButtonText="清空" @confirm="clearSearchHistory"></Confirm> -->
+    <Confirm ref="confirm" text="是否清空所有搜索历史" confirmButtonText="清空" @confirm="clearSearchHistory"></Confirm>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 import Scroll from "@/base/scroll/scroll";
-// import SearchList from "@/base/searchList/searchList";
-// import Confirm from "@/base/confirm/confirm";
+import SearchList from "@/base/search-list/search-list";
+import Confirm from "@/base/confirm/confirm";
 import Suggest from "@/components/suggest/suggest";
 import SearchBox from "@/base/searchBox/searchBox";
 import { getHotSearch } from "@/api/search";
@@ -54,15 +54,14 @@ export default {
   mixins: [playlistMixin, searchMixin],
   data() {
     return {
-      query: "",
-      hotKey: []
+      hotKey: [],
     };
   },
   components: {
     SearchBox,
     Suggest,
-    // SearchList,
-    // Confirm,
+    SearchList,
+    Confirm,
     Scroll
   },
   computed: {
@@ -91,11 +90,11 @@ export default {
     },
     addQuery(query) {
       this.$refs.searchBox.setQuery(query);
-    }
-    // showConfirm() {
-    //   this.$refs.confirm.show();
-    // },
-    // ...mapActions(["clearSearchHistory"])
+    },
+    showConfirm() {
+      this.$refs.confirm.show();
+    },
+    ...mapActions(["clearSearchHistory"])
   },
   watch: {
     query(newQuery) {

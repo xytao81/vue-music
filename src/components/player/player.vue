@@ -94,11 +94,12 @@
             <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
           </ProgressCircle>
         </div>
-        <div class="control">
+        <div class="control"  @click.stop='showPlaylist'>
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
+    <Playlist ref='playlist'></Playlist>
     <audio
       ref="audio"
       :src="currentSong.url"
@@ -120,16 +121,20 @@ import { shuffle } from "@/assets/js/utils";
 import Lyric from "lyric-parser";
 import Scroll from "@/base/scroll/scroll";
 import { prefixStyle } from "@/assets/js/dom";
+import Playlist from '@/components/playlist/playlist'
+import { playModeMixin } from '@/assets/js/mixin'
 
 const transform = prefixStyle("transform");
 const transitionDuration = prefixStyle("transitionDuration");
 
 export default {
+  mixins: [ playModeMixin ],
   name: "Player",
   components: {
     ProgressBar,
     ProgressCircle,
-    Scroll
+    Scroll,
+    Playlist
   },
   data() {
     return {
@@ -179,6 +184,9 @@ export default {
     ])
   },
   methods: {
+    showPlaylist () {
+      this.$refs.playlist.show()
+    },
     enter(el, done) {
       const { x, y, scale } = this._getPosAndScale();
       let animation = {
